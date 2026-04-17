@@ -8,7 +8,9 @@
       "Bash(npx shadcn@latest *)"
     ],
     "additionalDirectories": [
-      "/home/ab/Projects/cointelligence/docs"
+      "/home/ab/Projects/cointelligence/docs",
+      "/home/ab/Projects/cointelligence/src/app/(payload)/admin",
+      "/home/ab/Projects/cointelligence/app"
     ]
   }
 }
