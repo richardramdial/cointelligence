@@ -1,0 +1,85 @@
+version: '3.8'
+
+services:
+  traefik:
+    image: traefik:v3
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      TRAEFIK_API_INSECURE: "false"
+      TRAEFIK_PROVIDERS_DOCKER: "true"
+      TRAEFIK_PROVIDERS_DOCKER_EXPOSEDBYDEFAULT: "false"
+      TRAEFIK_ENTRYPOINTS_WEB_ADDRESS: ":80"
+      TRAEFIK_ENTRYPOINTS_WEBSECURE_ADDRESS: ":443"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./traefik/traefik.yml:/traefik.yml:ro
+      - ./traefik/acme.json:/acme.json:rw
+    networks:
+      - web
+    labels:
+      traefik.enable: "true"
+
+  app:
+    image: ghcr.io/richardramdial/cointelligence:latest
+    restart: unless-stopped
+    expose:
+      - "3000"
+    env_file: .env
+    environment:
+      HOSTNAME: "0.0.0.0"
+    volumes:
+      - media_data:/app/media
+    depends_on:
+      - db
+    networks:
+      - web
+      - internal
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.cointelligence.rule: "Host(`${NEXT_PUBLIC_SITE_URL}`)"
+      traefik.http.routers.cointelligence.entrypoints: "web,websecure"
+      traefik.http.routers.cointelligence.service: "cointelligence"
+      traefik.http.routers.cointelligence.tls: "true"
+      traefik.http.routers.cointelligence.tls.certresolver: "letsencrypt"
+      traefik.http.services.cointelligence.loadbalancer.server.port: "3000"
+      traefik.http.middlewares.redirect-https.redirectscheme.scheme: "https"
+      traefik.http.middlewares.redirect-https.redirectscheme.permanent: "true"
+      traefik.http.routers.cointelligence-http.entrypoints: "web"
+      traefik.http.routers.cointelligence-http.rule: "Host(`${NEXT_PUBLIC_SITE_URL}`)"
+      traefik.http.routers.cointelligence-http.middlewares: "redirect-https"
+
+  db:
+    image: postgres:16
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - internal
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+networks:
+  web:
+    name: web
+    driver: bridge
+  internal:
+    name: internal
+    driver: bridge
+
+volumes:
+  postgres_data:
+    name: postgres_data
+    driver: local
+  media_data:
+    name: media_data
+    driver: local

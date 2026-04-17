@@ -1,0 +1,39 @@
+global:
+  checkNewVersion: false
+  sendAnonymousUsage: false
+
+entryPoints:
+  web:
+    address: :80
+    http:
+      redirections:
+        entryPoint:
+          to: websecure
+          scheme: https
+  websecure:
+    address: :443
+    http:
+      tls:
+        certResolver: letsencrypt
+        options: default
+
+api:
+  dashboard: false
+  debug: false
+
+providers:
+  docker:
+    endpoint: unix:///var/run/docker.sock
+    exposedByDefault: false
+    watch: true
+  file:
+    filename: /traefik.yml
+    watch: true
+
+certificatesResolvers:
+  letsencrypt:
+    acme:
+      email: ${ACME_EMAIL:-admin@example.com}
+      storage: acme.json
+      httpChallenge:
+        entryPoint: web

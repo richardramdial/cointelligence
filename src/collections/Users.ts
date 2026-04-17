@@ -4,25 +4,22 @@ const Users: CollectionConfig = {
   slug: 'users',
   admin: {
     useAsTitle: 'email',
+    baseListQuery: {
+      limit: 50,
+    },
   },
-  auth: true,
+  auth: {
+    disableLocalStrategy: true,
+  },
   fields: [
     {
       name: 'email',
       type: 'email',
       required: true,
       unique: true,
-    },
-    {
-      name: 'role',
-      type: 'select',
-      options: [
-        {
-          label: 'Admin',
-          value: 'admin',
-        },
-      ],
-      defaultValue: 'admin',
+      admin: {
+        position: 'sidebar',
+      },
     },
   ],
 }

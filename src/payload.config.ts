@@ -14,7 +14,7 @@ export default buildConfig({
   collections: [Users, Media],
   globals: [SiteSettings],
   editor: slateEditor({}),
-  secret: process.env.PAYLOAD_SECRET || '',
+  secret: process.env.PAYLOAD_SECRET || 'secret-key-change-me',
   typescript: {
     outputFile: path.resolve(__dirname, 'payload-types.ts'),
   },
