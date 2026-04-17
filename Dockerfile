@@ -15,7 +15,8 @@ RUN npm ci --legacy-peer-deps
 COPY . .
 
 # Build the Next.js app
-RUN npm run build
+# Skip Payload initialization during build (database not available in build container)
+RUN DATABASE_URI=postgresql://dummy:dummy@localhost/dummy npm run build
 
 # Stage 2: Runner
 FROM node:20-alpine
