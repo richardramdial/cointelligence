@@ -23,7 +23,9 @@ services:
       traefik.enable: "true"
 
   app:
-    image: ghcr.io/richardramdial/cointelligence:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
     restart: unless-stopped
     expose:
       - "3000"
