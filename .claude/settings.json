@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "Bash(npm create *)",
+      "Bash(npm install *)",
+      "Bash(npx shadcn-ui@latest *)",
+      "Bash(npx shadcn@latest *)"
+    ],
+    "additionalDirectories": [
+      "/home/ab/Projects/cointelligence/docs"
+    ]
+  }
+}
