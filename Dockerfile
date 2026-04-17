@@ -32,6 +32,7 @@ COPY --from=builder /app/public ./public
 COPY --from=builder /app/package*.json ./
 
 # Copy additional files needed at runtime
+COPY --from=builder /app/tsconfig.json ./
 COPY src/payload.config.ts ./src/
 COPY src/collections ./src/collections
 COPY src/globals ./src/globals
@@ -46,4 +47,4 @@ EXPOSE 3000
 ENTRYPOINT ["dumb-init", "--"]
 
 # Run migrations and start the app
-CMD ["sh", "-c", "npm run payload migrate && node node_modules/.next/standalone/server.js"]
+CMD ["sh", "-c", "npm run payload migrate && node .next/standalone/server.js"]
