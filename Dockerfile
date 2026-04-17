@@ -31,12 +31,6 @@ COPY --from=builder /app/.next ./.next
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/package*.json ./
 
-# Copy additional files needed at runtime
-COPY --from=builder /app/tsconfig.json ./
-COPY src/payload.config.ts ./src/
-COPY src/collections ./src/collections
-COPY src/globals ./src/globals
-
 # Create media directory
 RUN mkdir -p /app/media
 
@@ -46,5 +40,4 @@ EXPOSE 3000
 # Use dumb-init to handle signals properly
 ENTRYPOINT ["dumb-init", "--"]
 
-# Run migrations and start the app
-CMD ["sh", "-c", "npm run payload migrate && node .next/standalone/server.js"]
+CMD ["node", ".next/standalone/server.js"]
