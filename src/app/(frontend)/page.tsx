@@ -7,7 +7,9 @@ import CoIntelligenceCards from '@/components/home/CoIntelligenceCards'
 import ArticlesByTheme from '@/components/home/ArticlesByTheme'
 
 export const metadata = {
-  title: 'Home | Cointelligence',
+  title: {
+    absolute: 'Cointelligence',
+  },
   description: 'Editorial and thought-leadership platform by Richard Ramdial',
 }
 

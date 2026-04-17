@@ -4,7 +4,7 @@ import InquiryForm from '@/components/connect/InquiryForm'
 import ContactLinks from '@/components/connect/ContactLinks'
 
 export const metadata = {
-  title: 'Connect | Cointelligence',
+  title: 'Connect',
   description: 'Get in touch with Richard Ramdial.',
 }
 

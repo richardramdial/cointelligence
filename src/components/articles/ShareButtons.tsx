@@ -1,15 +1,16 @@
 'use client'
 
-import { Mail, Copy, Check } from 'lucide-react'
+import { Mail, Copy, Check, MessageCircle } from 'lucide-react'
 import { useState } from 'react'
 
 interface ShareButtonsProps {
   title: string
   excerpt: string
   slug: string
+  whatsappNumber?: string
 }
 
-export default function ShareButtons({ title, excerpt, slug }: ShareButtonsProps) {
+export default function ShareButtons({ title, excerpt, slug, whatsappNumber }: ShareButtonsProps) {
   const [copied, setCopied] = useState(false)
 
   const url = typeof window !== 'undefined' ? window.location.href : `${process.env.NEXT_PUBLIC_SITE_URL}/articles/${slug}`
@@ -30,6 +31,13 @@ export default function ShareButtons({ title, excerpt, slug }: ShareButtonsProps
     window.location.href = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
   }
 
+  const handleWhatsApp = () => {
+    if (!whatsappNumber) return
+    const text = `${title}\n\n${excerpt}\n\n${url}`
+    const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(text)}`
+    window.open(whatsappUrl, '_blank')
+  }
+
   return (
     <div className="flex items-center gap-4 py-4">
       <span className="text-sm font-medium text-foreground/60">Share:</span>
@@ -41,6 +49,16 @@ export default function ShareButtons({ title, excerpt, slug }: ShareButtonsProps
       >
         <Mail size={20} />
       </button>
+      {whatsappNumber && (
+        <button
+          onClick={handleWhatsApp}
+          className="p-2 hover:bg-muted rounded-lg transition-colors text-foreground/70 hover:text-foreground"
+          title="Share via WhatsApp"
+          aria-label="Share via WhatsApp"
+        >
+          <MessageCircle size={20} />
+        </button>
+      )}
       <button
         onClick={handleCopyLink}
         className="p-2 hover:bg-muted rounded-lg transition-colors text-foreground/70 hover:text-foreground"

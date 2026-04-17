@@ -2,7 +2,7 @@ import { getPayload } from 'payload'
 import config from '@/payload.config'
 
 export const metadata = {
-  title: 'About Richard | Cointelligence',
+  title: 'About Richard',
   description: 'Learn more about Richard Ramdial.',
 }
 

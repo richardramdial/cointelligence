@@ -8,7 +8,8 @@
       "Bash(npx shadcn@latest *)",
       "Bash(npm run *)",
       "Bash(docker compose *)",
-      "Bash(docker build *)"
+      "Bash(docker build *)",
+      "Bash(NEXT_TURBOPACK=0 npm run build)"
     ],
     "additionalDirectories": [
       "/home/ab/Projects/cointelligence/docs",

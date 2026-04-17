@@ -1,6 +1,7 @@
 import { getPayload } from 'payload'
 import config from '@/payload.config'
 import Link from 'next/link'
+import Image from 'next/image'
 import { Suspense } from 'react'
 
 const THEMES = [
@@ -11,7 +12,7 @@ const THEMES = [
 ]
 
 export const metadata = {
-  title: 'Articles | Cointelligence',
+  title: 'Articles',
   description: 'Read articles on leadership, systems, thinking, and more.',
 }
 
@@ -70,8 +71,18 @@ async function ArticlesContent({ theme }: { theme?: string }) {
                     href={`/articles/${article.slug}`}
                     className="group overflow-hidden rounded-lg border border-border hover:border-primary transition-all hover:shadow-md"
                   >
-                    <div className="aspect-video bg-muted">
-                      <div className="w-full h-full bg-gradient-to-br from-primary/10 to-accent/10" />
+                    <div className="aspect-video bg-muted relative overflow-hidden">
+                      {typeof article.coverImage === 'object' && article.coverImage.url ? (
+                        <Image
+                          src={article.coverImage.url}
+                          alt={article.coverImage.alt ?? article.title}
+                          fill
+                          className="object-cover"
+                          sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 400px"
+                        />
+                      ) : (
+                        <div className="w-full h-full bg-gradient-to-br from-primary/10 to-accent/10" />
+                      )}
                     </div>
                     <div className="p-6">
                       <h3 className="font-serif font-bold text-xl line-clamp-2 group-hover:text-primary transition-colors mb-3">

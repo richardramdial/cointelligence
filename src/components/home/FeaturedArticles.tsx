@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import { getPayload } from 'payload'
 import config from '@/payload.config'
 
@@ -33,11 +34,20 @@ export default async function FeaturedArticles({ articles }: FeaturedArticlesPro
           href={`/articles/${article.slug}`}
           className="group overflow-hidden rounded-lg border border-border hover:border-primary transition-all hover:shadow-lg"
         >
-          <div className="aspect-video bg-muted overflow-hidden">
-            {/* Placeholder for cover image */}
-            <div className="w-full h-full bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center">
-              <span className="text-foreground/40">No image</span>
-            </div>
+          <div className="aspect-video bg-muted relative overflow-hidden">
+            {typeof article.coverImage === 'object' && article.coverImage.url ? (
+              <Image
+                src={article.coverImage.url}
+                alt={article.coverImage.alt ?? article.title}
+                fill
+                className="object-cover"
+                sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 400px"
+              />
+            ) : (
+              <div className="w-full h-full bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center">
+                <span className="text-foreground/40">No image</span>
+              </div>
+            )}
           </div>
           <div className="p-6">
             <p className="text-sm font-medium text-primary mb-2">{article.theme}</p>
