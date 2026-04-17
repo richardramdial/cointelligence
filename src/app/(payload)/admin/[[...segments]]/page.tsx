@@ -1,18 +1,17 @@
+import { RootPage, generatePageMetadata } from '@payloadcms/next/views'
+import { importMap } from '../importMap'
+import configPromise from '@/payload.config'
 import type { Metadata } from 'next'
 
-// Payload admin UI will be rendered at runtime via Payload's Next.js integration
-// This is a placeholder - the actual admin interface is handled by @payloadcms/next
-
-export const metadata: Metadata = {
-  title: 'Admin',
-  description: 'Cointelligence Admin Panel',
+type Args = {
+  params: Promise<{ segments: string[] }>
+  searchParams: Promise<{ [key: string]: string | string[] }>
 }
 
-export default function AdminPage() {
-  return (
-    <div style={{ padding: '2rem', textAlign: 'center' }}>
-      <h1>Admin Panel</h1>
-      <p>Loading Payload CMS admin interface...</p>
-    </div>
-  )
-}
+export const generateMetadata = ({ params, searchParams }: Args): Promise<Metadata> =>
+  generatePageMetadata({ config: configPromise, params, searchParams })
+
+const Page = ({ params, searchParams }: Args) =>
+  RootPage({ config: configPromise, importMap, params, searchParams })
+
+export default Page
