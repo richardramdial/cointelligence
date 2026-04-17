@@ -8,9 +8,14 @@ api:
 providers:
   docker:
     exposedByDefault: false
+    network: web
 
 entryPoints:
   web:
     address: ":80"
   websecure:
     address: ":443"
+
+serversTransport:
+  forwardingTimeouts:
+    responseHeaderTimeout: "300s"
