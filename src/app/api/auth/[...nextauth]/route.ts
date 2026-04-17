@@ -1,7 +1,25 @@
-import NextAuth from 'next-auth'
+import NextAuth, { type Session } from 'next-auth'
 import GoogleProvider from 'next-auth/providers/google'
 import { getPayload } from 'payload'
 import config from '@/payload.config'
+import type { JWT } from 'next-auth/jwt'
+import type { Account, Profile, User } from 'next-auth'
+
+declare module 'next-auth' {
+  interface User {
+    id?: string
+  }
+  interface Session {
+    user: User & { id: string }
+  }
+}
+
+declare module 'next-auth/jwt' {
+  interface JWT {
+    id?: string
+    email?: string | null
+  }
+}
 
 // Parse admin emails from environment variable
 // Format: "email1@example.com,email2@example.com"
@@ -26,21 +44,21 @@ export const authOptions = {
     error: '/auth/error',
   },
   callbacks: {
-    async signIn({ user, account, profile }) {
+    async signIn({ user, account, profile }: { user: User; account: Account | null; profile?: Profile }): Promise<boolean> {
       // Check if email is in admin list
       if (!isAdminEmail(user.email)) {
         return false
       }
       return true
     },
-    async jwt({ token, user, account }) {
+    async jwt({ token, user, account }: { token: JWT; user?: User; account?: Account | null }): Promise<JWT> {
       if (user) {
         token.id = user.id
         token.email = user.email
       }
       return token
     },
-    async session({ session, token }) {
+    async session({ session, token }: { session: Session; token: JWT }): Promise<Session> {
       if (session.user) {
         session.user.id = token.id as string
       }
@@ -49,7 +67,7 @@ export const authOptions = {
   },
   secret: process.env.NEXTAUTH_SECRET,
   session: {
-    strategy: 'jwt',
+    strategy: 'jwt' as const,
     maxAge: 30 * 24 * 60 * 60, // 30 days
   },
 }

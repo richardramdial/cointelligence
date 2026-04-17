@@ -24,7 +24,7 @@ export default async function FeaturedArticles({ articles }: FeaturedArticlesPro
     })
   )
 
-  const validArticles = articleDetails.filter(Boolean)
+  const validArticles = articleDetails.filter((article): article is NonNullable<typeof article> => article !== null)
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
