@@ -41,7 +41,7 @@ services:
       - internal
     labels:
       traefik.enable: "true"
-      traefik.http.routers.cointelligence.rule: "Host(`${NEXT_PUBLIC_SITE_URL}`)"
+      traefik.http.routers.cointelligence.rule: "Host(`${SITE_HOST}`)"
       traefik.http.routers.cointelligence.entrypoints: "web,websecure"
       traefik.http.routers.cointelligence.service: "cointelligence"
       traefik.http.routers.cointelligence.tls: "true"
@@ -50,7 +50,7 @@ services:
       traefik.http.middlewares.redirect-https.redirectscheme.scheme: "https"
       traefik.http.middlewares.redirect-https.redirectscheme.permanent: "true"
       traefik.http.routers.cointelligence-http.entrypoints: "web"
-      traefik.http.routers.cointelligence-http.rule: "Host(`${NEXT_PUBLIC_SITE_URL}`)"
+      traefik.http.routers.cointelligence-http.rule: "Host(`${SITE_HOST}`)"
       traefik.http.routers.cointelligence-http.middlewares: "redirect-https"
 
   db:
