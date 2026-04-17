@@ -4,7 +4,6 @@ const Media: CollectionConfig = {
   slug: 'media',
   upload: {
     staticDir: '/app/media',
-    staticURL: '/media',
     imageSizes: [
       {
         name: 'thumbnail',
@@ -25,9 +24,6 @@ const Media: CollectionConfig = {
         crop: 'center',
       },
     ],
-    formatOptions: {
-      format: 'webp',
-    },
   },
   fields: [
     {

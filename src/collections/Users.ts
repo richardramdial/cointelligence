@@ -4,9 +4,6 @@ const Users: CollectionConfig = {
   slug: 'users',
   admin: {
     useAsTitle: 'email',
-    baseListQuery: {
-      limit: 50,
-    },
   },
   auth: {
     disableLocalStrategy: true,

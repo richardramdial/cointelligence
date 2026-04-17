@@ -1,9 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
+  // Empty config - Payload v3 and Next.js 16 defaults work
 };
 
 export default nextConfig;
