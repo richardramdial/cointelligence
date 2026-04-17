@@ -3,6 +3,8 @@ import config from '@/payload.config'
 import InquiryForm from '@/components/connect/InquiryForm'
 import ContactLinks from '@/components/connect/ContactLinks'
 
+export const dynamic = 'force-dynamic'
+
 export const metadata = {
   title: 'Connect',
   description: 'Get in touch with Richard Ramdial.',

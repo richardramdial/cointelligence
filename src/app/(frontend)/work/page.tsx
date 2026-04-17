@@ -1,6 +1,8 @@
 import { getPayload } from 'payload'
 import config from '@/payload.config'
 
+export const dynamic = 'force-dynamic'
+
 export const metadata = {
   title: 'Work With Richard',
   description: 'Explore ways to work with Richard Ramdial.',

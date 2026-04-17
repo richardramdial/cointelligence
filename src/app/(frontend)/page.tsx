@@ -1,6 +1,8 @@
 import { getPayload } from 'payload'
 import config from '@/payload.config'
 import Hero from '@/components/home/Hero'
+
+export const dynamic = 'force-dynamic'
 import ThemesGrid from '@/components/home/ThemesGrid'
 import FeaturedArticles from '@/components/home/FeaturedArticles'
 import CoIntelligenceCards from '@/components/home/CoIntelligenceCards'

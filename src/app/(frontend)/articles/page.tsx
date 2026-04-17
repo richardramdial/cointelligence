@@ -4,6 +4,8 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { Suspense } from 'react'
 
+export const dynamic = 'force-dynamic'
+
 const THEMES = [
   'Leadership and Perception',
   'Systems and Transformation',

@@ -5,6 +5,9 @@ import type { Metadata } from 'next'
 import Image from 'next/image'
 import ShareButtons from '@/components/articles/ShareButtons'
 
+// Disable static generation for Docker builds - database not available at build time
+export const dynamic = 'force-dynamic'
+
 async function getArticle(slug: string) {
   const payload = await getPayload({ config })
   const articles = await payload.find({
@@ -16,20 +19,6 @@ async function getArticle(slug: string) {
   })
 
   return articles.docs[0] || null
-}
-
-export async function generateStaticParams() {
-  const payload = await getPayload({ config })
-  const articles = await payload.find({
-    collection: 'articles',
-    where: {
-      '_status': { equals: 'published' },
-    },
-  })
-
-  return articles.docs.map(article => ({
-    slug: article.slug,
-  }))
 }
 
 export async function generateMetadata(

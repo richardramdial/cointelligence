@@ -1,6 +1,8 @@
 import { getPayload } from 'payload'
 import config from '@/payload.config'
 
+export const dynamic = 'force-dynamic'
+
 export const metadata = {
   title: 'Co-Intelligence',
   description: 'Understanding co-intelligence and its applications.',
