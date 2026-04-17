@@ -3,6 +3,8 @@ import { importMap } from '../importMap'
 import configPromise from '@/payload.config'
 import type { Metadata } from 'next'
 
+export const dynamic = 'force-dynamic'
+
 type Args = {
   params: Promise<{ segments: string[] }>
   searchParams: Promise<{ [key: string]: string | string[] }>
