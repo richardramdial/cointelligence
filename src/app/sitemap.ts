@@ -2,6 +2,8 @@ import type { MetadataRoute } from 'next'
 import { getPayload } from 'payload'
 import config from '@/payload.config'
 
+export const dynamic = 'force-dynamic'
+
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://cointelligence.com'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
