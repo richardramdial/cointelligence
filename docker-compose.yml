@@ -7,12 +7,6 @@ services:
     ports:
       - "80:80"
       - "443:443"
-    environment:
-      TRAEFIK_API_INSECURE: "false"
-      TRAEFIK_PROVIDERS_DOCKER: "true"
-      TRAEFIK_PROVIDERS_DOCKER_EXPOSEDBYDEFAULT: "false"
-      TRAEFIK_ENTRYPOINTS_WEB_ADDRESS: ":80"
-      TRAEFIK_ENTRYPOINTS_WEBSECURE_ADDRESS: ":443"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - ./traefik/traefik.yml:/traefik.yml:ro
@@ -51,6 +45,7 @@ services:
       traefik.http.middlewares.redirect-https.redirectscheme.permanent: "true"
       traefik.http.routers.cointelligence-http.entrypoints: "web"
       traefik.http.routers.cointelligence-http.rule: "Host(`${SITE_HOST}`)"
+      traefik.http.routers.cointelligence-http.service: "cointelligence"
       traefik.http.routers.cointelligence-http.middlewares: "redirect-https"
 
   db:
