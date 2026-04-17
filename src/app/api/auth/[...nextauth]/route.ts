@@ -3,7 +3,16 @@ import GoogleProvider from 'next-auth/providers/google'
 import { getPayload } from 'payload'
 import config from '@/payload.config'
 
-const ALLOWED_EMAIL = 'richard.ramdial@gmail.com'
+// Parse admin emails from environment variable
+// Format: "email1@example.com,email2@example.com"
+const ADMIN_EMAILS = process.env.ADMIN_EMAILS
+  ? process.env.ADMIN_EMAILS.split(',').map((email: string) => email.trim().toLowerCase())
+  : ['richard.ramdial@gmail.com'] // Fallback to original default
+
+const isAdminEmail = (email: string | null | undefined): boolean => {
+  if (!email) return false
+  return ADMIN_EMAILS.includes(email.toLowerCase())
+}
 
 export const authOptions = {
   providers: [
@@ -18,8 +27,8 @@ export const authOptions = {
   },
   callbacks: {
     async signIn({ user, account, profile }) {
-      // Only allow richard.ramdial@gmail.com
-      if (user.email !== ALLOWED_EMAIL) {
+      // Check if email is in admin list
+      if (!isAdminEmail(user.email)) {
         return false
       }
       return true

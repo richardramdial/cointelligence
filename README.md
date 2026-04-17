@@ -47,12 +47,24 @@ A personal editorial and thought-leadership platform for Richard Ramdial built w
    npm run payload migrate
    ```
 
-5. **Seed admin user:**
+5. **Configure admin users in `.env.local`:**
+   ```bash
+   # Single admin
+   ADMIN_EMAILS=your-email@example.com
+   ADMIN_PASSWORD=your-password
+   
+   # Multiple admins
+   ADMIN_EMAILS=admin1@example.com,admin2@example.com
+   ADMIN_PASSWORD=shared-password
+   ```
+   See [Admin Configuration Guide](docs/admin-configuration.md) for details.
+
+6. **Seed admin users:**
    ```bash
    ADMIN_PASSWORD=your-password npx ts-node scripts/seed.ts
    ```
 
-6. **Start dev server:**
+7. **Start dev server:**
    ```bash
    npm run dev
    ```

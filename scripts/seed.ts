@@ -4,32 +4,45 @@ import config from '../src/payload.config.js'
 async function seed() {
   const payload = await getPayload({ config })
 
-  // Check if admin user already exists
-  const existingUsers = await payload.find({
-    collection: 'users',
-    where: {
-      email: { equals: 'richard.ramdial@gmail.com' },
-    },
-  })
+  // Parse admin emails from environment variable
+  // Format: "email1@example.com,email2@example.com"
+  const adminEmails = process.env.ADMIN_EMAILS
+    ? process.env.ADMIN_EMAILS.split(',').map(email => email.trim().toLowerCase())
+    : ['richard.ramdial@gmail.com']
 
-  if (existingUsers.docs.length > 0) {
-    console.log('Admin user already exists')
-    return
-  }
+  const adminPassword = process.env.ADMIN_PASSWORD || 'change-me-in-production'
 
-  // Create admin user
-  try {
-    await payload.create({
+  console.log(`Creating admin user(s): ${adminEmails.join(', ')}`)
+
+  // Create admin user for each configured email
+  for (const email of adminEmails) {
+    // Check if admin user already exists
+    const existingUsers = await payload.find({
       collection: 'users',
-      data: {
-        email: 'richard.ramdial@gmail.com',
-        password: process.env.ADMIN_PASSWORD || 'change-me-in-production',
+      where: {
+        email: { equals: email },
       },
     })
-    console.log('Admin user created successfully')
-  } catch (error) {
-    console.error('Error creating admin user:', error)
-    process.exit(1)
+
+    if (existingUsers.docs.length > 0) {
+      console.log(`✓ Admin user already exists: ${email}`)
+      continue
+    }
+
+    // Create admin user
+    try {
+      await payload.create({
+        collection: 'users',
+        data: {
+          email,
+          password: adminPassword,
+        },
+      })
+      console.log(`✓ Admin user created: ${email}`)
+    } catch (error) {
+      console.error(`✗ Error creating admin user (${email}):`, error)
+      process.exit(1)
+    }
   }
 
   // Seed Engagements

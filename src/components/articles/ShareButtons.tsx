@@ -1,9 +1,7 @@
 'use client'
 
-import { Mail, MessageCircle, Copy, Check } from 'lucide-react'
+import { Mail, Copy, Check } from 'lucide-react'
 import { useState } from 'react'
-import { getPayload } from 'payload'
-import config from '@/payload.config'
 
 interface ShareButtonsProps {
   title: string
@@ -32,24 +30,6 @@ export default function ShareButtons({ title, excerpt, slug }: ShareButtonsProps
     window.location.href = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
   }
 
-  const handleWhatsApp = async () => {
-    // Fetch SiteSettings to get WhatsApp number
-    const payload = await getPayload({ config })
-    const settings = await payload.findGlobal({
-      slug: 'site-settings',
-    })
-
-    const whatsappNumber = settings?.whatsappNumber
-    if (!whatsappNumber) {
-      console.warn('WhatsApp number not configured')
-      return
-    }
-
-    const message = `${title}\n\n${excerpt}\n\n${url}`
-    const wa_link = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`
-    window.open(wa_link, '_blank')
-  }
-
   return (
     <div className="flex items-center gap-4 py-4">
       <span className="text-sm font-medium text-foreground/60">Share:</span>
@@ -60,14 +40,6 @@ export default function ShareButtons({ title, excerpt, slug }: ShareButtonsProps
         aria-label="Share via email"
       >
         <Mail size={20} />
-      </button>
-      <button
-        onClick={handleWhatsApp}
-        className="p-2 hover:bg-muted rounded-lg transition-colors text-foreground/70 hover:text-foreground"
-        title="Share on WhatsApp"
-        aria-label="Share on WhatsApp"
-      >
-        <MessageCircle size={20} />
       </button>
       <button
         onClick={handleCopyLink}

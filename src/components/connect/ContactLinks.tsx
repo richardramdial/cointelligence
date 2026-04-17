@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { Mail, Linkedin, MessageCircle } from 'lucide-react'
+import { Mail, ExternalLink } from 'lucide-react'
 
 interface ContactLinksProps {
   settings?: {
@@ -34,7 +34,7 @@ export default function ContactLinks({ settings }: ContactLinksProps) {
           rel="noopener noreferrer"
           className="flex items-center gap-4 p-4 border border-border rounded-lg hover:border-primary hover:bg-muted transition-all group"
         >
-          <Linkedin className="text-primary group-hover:scale-110 transition-transform" size={24} />
+          <ExternalLink className="text-primary group-hover:scale-110 transition-transform" size={24} />
           <div>
             <div className="font-medium">LinkedIn</div>
             <div className="text-sm text-foreground/60">Connect on LinkedIn</div>
