@@ -31,6 +31,45 @@ async function seed() {
     console.error('Error creating admin user:', error)
     process.exit(1)
   }
+
+  // Seed Engagements
+  const engagementsData = [
+    {
+      title: 'Executive Advisory',
+      description: 'Work with Richard on strategic direction, organizational transformation, and leadership alignment.',
+    },
+    {
+      title: 'Leadership Conversations',
+      description: 'Facilitated conversations exploring leadership challenges, decision-making frameworks, and organizational dynamics.',
+    },
+    {
+      title: 'Speaking and Workshops',
+      description: 'Custom workshops and keynotes tailored to your organization\'s needs and context.',
+    },
+  ]
+
+  try {
+    for (const engagement of engagementsData) {
+      const existing = await payload.find({
+        collection: 'engagements',
+        where: {
+          title: { equals: engagement.title },
+        },
+      })
+
+      if (existing.docs.length === 0) {
+        await payload.create({
+          collection: 'engagements',
+          data: engagement,
+        })
+        console.log(`Created engagement: ${engagement.title}`)
+      }
+    }
+    console.log('Engagements seeded successfully')
+  } catch (error) {
+    console.error('Error seeding engagements:', error)
+    process.exit(1)
+  }
 }
 
 seed()

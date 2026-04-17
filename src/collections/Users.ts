@@ -5,9 +5,7 @@ const Users: CollectionConfig = {
   admin: {
     useAsTitle: 'email',
   },
-  auth: {
-    disableLocalStrategy: true,
-  },
+  auth: {},
   fields: [
     {
       name: 'email',

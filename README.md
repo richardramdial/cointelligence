@@ -11,15 +11,15 @@ A personal editorial and thought-leadership platform for Richard Ramdial built w
 - **Typography**: Fraunces (headings) + Inter (body)
 - **Reverse Proxy**: Traefik v3 (TLS termination, Let's Encrypt)
 - **Containerization**: Docker + Docker Compose
-- **CI/CD**: GitHub Actions
-- **Auth**: Payload CMS native authentication (Phase 1)
+- **Deployment**: Manual via GitHub Actions SSH
+- **Auth**: Google OAuth + Payload CMS native authentication (email+password backup)
 
 ## Local Development
 
 ### Prerequisites
 
 - Node.js 20.9.0 or later
-- Docker and Docker Compose (optional, for local PostgreSQL)
+- Docker and Docker Compose (optional)
 
 ### Setup
 
@@ -28,12 +28,10 @@ A personal editorial and thought-leadership platform for Richard Ramdial built w
    npm install
    ```
 
-2. **Configure environment variables:**
+2. **Configure environment:**
    ```bash
    cp .env.example .env.local
    ```
-   
-   Edit `.env.local` with local database credentials
 
 3. **Start PostgreSQL (optional):**
    ```bash
@@ -41,62 +39,78 @@ A personal editorial and thought-leadership platform for Richard Ramdial built w
      -e POSTGRES_USER=cointelligence \
      -e POSTGRES_PASSWORD=local-password \
      -e POSTGRES_DB=cointelligence \
-     -p 5432:5432 \
-     -d postgres:16
+     -p 5432:5432 -d postgres:16
    ```
 
-4. **Run database migrations:**
+4. **Run migrations:**
    ```bash
    npm run payload migrate
    ```
 
-5. **Seed admin user (optional):**
+5. **Seed admin user:**
    ```bash
    ADMIN_PASSWORD=your-password npx ts-node scripts/seed.ts
    ```
 
-6. **Start the development server:**
+6. **Start dev server:**
    ```bash
    npm run dev
    ```
 
-## VM Provisioning (Richard's Tasks)
+## Azure VM Setup
 
 ### Prerequisites
 
-- Azure account with permissions to create VMs
-- Available domain name
+- Azure account
+- Domain name
 
 ### Steps
 
-1. **Provision Azure VM:**
+1. **Provision VM:**
    - OS: Ubuntu 22.04 LTS
-   - Ports: Open 80 (HTTP) and 443 (HTTPS)
-   - Note the public IP address
+   - Ports: 80, 443 open
+   - Note the public IP
 
 2. **Install Docker:**
    ```bash
    sudo apt update && sudo apt upgrade -y
    sudo apt install -y docker.io docker-compose
    sudo usermod -aG docker $USER
+   newgrp docker
    ```
 
-3. **Clone repository and set up:**
+3. **Set up SSH key:**
+   ```bash
+   # On local machine, generate if needed:
+   ssh-keygen -t rsa -b 4096 -f ~/.ssh/deploy_key -N ""
+   
+   # Copy to VM:
+   ssh-copy-id -i ~/.ssh/deploy_key azureuser@<VM_IP>
+   ```
+
+4. **Clone on VM:**
    ```bash
    cd ~
    git clone https://github.com/richardramdial/cointelligence.git
    cd cointelligence
    ```
 
-4. **Create `.env` file with production values**
+5. **Create `.env` on VM (never committed):**
+   ```bash
+   cat > .env << 'EOF'
+   NODE_ENV=production
+   NEXT_PUBLIC_SITE_URL=https://yourdomain.com
+   PAYLOAD_SECRET=your-generated-secret-key
+   POSTGRES_USER=cointelligence
+   POSTGRES_PASSWORD=your-strong-password
+   POSTGRES_DB=cointelligence
+   DATABASE_URI=postgresql://cointelligence:your-strong-password@db:5432/cointelligence
+   PAYLOAD_PUBLIC_UPLOAD_DIR=/app/media
+   ACME_EMAIL=your-email@example.com
+   EOF
+   ```
 
-5. **Point domain DNS A record at the VM**
-
-6. **Add GitHub Actions secrets:**
-   - `SSH_PRIVATE_KEY`: Deploy SSH private key
-   - `VM_HOST`: VM public IP or hostname
-   - `VM_USER`: SSH user on VM (e.g., `azureuser`)
-   - `GHCR_TOKEN`: GitHub PAT with `packages:write` scope
+6. **Point domain DNS A record at VM IP**
 
 7. **Start services:**
    ```bash
@@ -104,16 +118,48 @@ A personal editorial and thought-leadership platform for Richard Ramdial built w
    docker compose up -d
    ```
 
+8. **Seed admin user (one-time):**
+   ```bash
+   docker compose exec app npx ts-node scripts/seed.ts
+   ```
+
+9. **Add GitHub Actions secrets:**
+   - Go to GitHub repo → **Settings** → **Secrets and variables** → **Actions**
+   - Add:
+     - `SSH_PRIVATE_KEY`: Your deploy private key
+     - `VM_HOST`: VM IP or hostname
+     - `VM_USER`: SSH user (typically `azureuser`)
+
+10. **Set up Google OAuth (on VM `.env`):**
+    - Go to [Google Cloud Console](https://console.cloud.google.com/)
+    - Create a new project (or use existing)
+    - Enable **Google+ API**
+    - Create **OAuth 2.0 credentials** (Web application type)
+    - Add **Authorized redirect URIs**:
+      - `https://yourdomain.com/api/auth/callback/google`
+    - Copy **Client ID** and **Client Secret**
+    - Add to `.env` on VM:
+      ```
+      GOOGLE_CLIENT_ID=your-client-id.apps.googleusercontent.com
+      GOOGLE_CLIENT_SECRET=your-client-secret
+      NEXTAUTH_SECRET=$(node -e "console.log(require('crypto').randomBytes(32).toString('hex'))")
+      NEXTAUTH_URL=https://yourdomain.com
+      ```
+
 ## Deployment
 
-### Automatic Deployment (GitHub Actions)
+### Via GitHub Actions
 
-Push to `main` branch — GitHub Actions will build, push to GHCR, and deploy.
+1. Go to repo → **Actions** → **Manual Deploy to Azure VM**
+2. Click **Run workflow**
+3. Workflow will pull latest code and Docker images, then redeploy and run migrations
 
-### Manual Deployment
+### Via SSH
 
 ```bash
+ssh -i ~/.ssh/deploy_key azureuser@<VM_IP>
 cd ~/cointelligence
+git pull origin main
 docker compose pull
 docker compose up -d
 ```
@@ -125,16 +171,29 @@ docker compose up -d
 
 ## Phase 1 Verification
 
-- [ ] Navigate to `https://<domain>/admin` and log in
+- [ ] Navigate to `https://<domain>/admin`
+- [ ] Log in with seeded credentials
 - [ ] Edit `SiteSettings` and verify persistence
-- [ ] Upload test image, restart containers, verify it persists
-- [ ] `docker compose ps` — all services show `Up`
+- [ ] Upload test image to Media
+- [ ] Restart: `docker compose restart app`
+- [ ] Verify image persists
+- [ ] Check all services: `docker compose ps`
+
+## Key Notes
+
+- **`.env` stays on VM only** — never in git
+- **Secrets not in GitHub** — in `.env` on VM
+- **Manual deployment** via workflow dispatch or SSH
+- **Migrations run on startup** automatically
+- **Traefik** auto-renews Let's Encrypt certs
 
 ## Documentation
 
 - [Implementation Plan](docs/implementation-plan.md)
 - [Design & Requirements](docs/design-and-requirements.md)
 - [Architecture](docs/architecture.md)
+- [Phase 1 Summary](docs/phase-1-summary.md)
+- [Local Tests Summary](docs/local-tests-summary.md)
 
 ## License
 

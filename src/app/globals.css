@@ -50,24 +50,25 @@
 }
 
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
+  /* Warm editorial palette */
+  --background: oklch(0.99 0.002 70);
+  --foreground: oklch(0.2 0.02 25);
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
+  --card-foreground: oklch(0.2 0.02 25);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
+  --popover-foreground: oklch(0.2 0.02 25);
+  --primary: oklch(0.55 0.15 25);
+  --primary-foreground: oklch(0.98 0.002 70);
+  --secondary: oklch(0.88 0.08 40);
+  --secondary-foreground: oklch(0.2 0.02 25);
+  --muted: oklch(0.92 0.01 50);
+  --muted-foreground: oklch(0.5 0.02 50);
+  --accent: oklch(0.7 0.12 35);
+  --accent-foreground: oklch(0.98 0.002 70);
   --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
+  --border: oklch(0.93 0.01 70);
+  --input: oklch(0.96 0.01 70);
+  --ring: oklch(0.55 0.15 25);
   --chart-1: oklch(0.87 0 0);
   --chart-2: oklch(0.556 0 0);
   --chart-3: oklch(0.439 0 0);
@@ -127,5 +128,46 @@
   }
   html {
     @apply font-sans;
+  }
+
+  /* Typography scale */
+  h1 {
+    @apply text-5xl font-serif font-bold leading-tight tracking-tight;
+  }
+  h2 {
+    @apply text-4xl font-serif font-bold leading-snug tracking-tight;
+  }
+  h3 {
+    @apply text-3xl font-serif font-semibold leading-snug;
+  }
+  h4 {
+    @apply text-2xl font-serif font-semibold;
+  }
+  h5 {
+    @apply text-xl font-serif font-semibold;
+  }
+  h6 {
+    @apply text-lg font-serif font-semibold;
+  }
+
+  p {
+    @apply leading-7;
+  }
+
+  /* Rich text prose styling */
+  .prose {
+    @apply max-w-2xl mx-auto;
+  }
+  .prose h1, .prose h2, .prose h3, .prose h4, .prose h5, .prose h6 {
+    @apply font-serif font-bold mt-6 mb-3;
+  }
+  .prose p {
+    @apply mb-4;
+  }
+  .prose ul, .prose ol {
+    @apply ml-6 mb-4;
+  }
+  .prose li {
+    @apply mb-2;
   }
 }

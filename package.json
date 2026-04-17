@@ -20,6 +20,7 @@
     "next": "16.2.4",
     "next-auth": "^4.24.14",
     "payload": "^3.83.0",
+    "payload-authjs": "^0.10.1",
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "shadcn": "^4.3.0",
@@ -28,6 +29,7 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
+    "@tailwindcss/typography": "^0.5.19",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
