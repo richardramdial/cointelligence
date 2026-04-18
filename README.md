@@ -136,6 +136,7 @@ A personal editorial and thought-leadership platform for Richard Ramdial built w
    chmod 600 ~/cointelligence/traefik/certs/origin.key
    chmod 644 ~/cointelligence/traefik/certs/origin.crt
    ```
+   - Traefik mounts the entire `traefik/certs` directory as `/certs`, so both files must exist with those exact names.
 
 7. **Start services:**
    ```bash
