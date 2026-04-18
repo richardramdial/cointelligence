@@ -1,0 +1,7 @@
+tls:
+  certificates:
+    - certFile: /certs/origin.crt
+      keyFile: /certs/origin.key
+  options:
+    default:
+      minVersion: VersionTLS12

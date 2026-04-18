@@ -9,7 +9,7 @@ A personal editorial and thought-leadership platform for Richard Ramdial built w
 - **Database**: PostgreSQL 16
 - **Styling**: Tailwind CSS v4 + shadcn/ui
 - **Typography**: Fraunces (headings) + Inter (body)
-- **Reverse Proxy**: Traefik v3 (TLS termination, Let's Encrypt)
+- **Reverse Proxy**: Traefik v3 (TLS termination with Cloudflare Origin CA)
 - **Containerization**: Docker + Docker Compose
 - **Deployment**: Manual via GitHub Actions SSH
 - **Auth**: Google OAuth + Payload CMS native authentication (email+password backup)
@@ -118,11 +118,24 @@ A personal editorial and thought-leadership platform for Richard Ramdial built w
    POSTGRES_DB=cointelligence
    DATABASE_URI=postgresql://cointelligence:your-strong-password@db:5432/cointelligence
    PAYLOAD_PUBLIC_UPLOAD_DIR=/app/media
-   ACME_EMAIL=your-email@example.com
+   SITE_HOST=yourdomain.com
    EOF
    ```
 
-6. **Point domain DNS A record at VM IP**
+6. **Configure Cloudflare + Origin Certificate:**
+   - Point domain DNS `A` record to VM IP and keep it proxied (orange cloud)
+   - In Cloudflare SSL/TLS settings, set mode to **Full (Strict)**
+   - Generate a Cloudflare Origin CA certificate for `yourdomain.com` and `*.yourdomain.com`
+   - Save cert/key on the VM:
+   ```bash
+   mkdir -p ~/cointelligence/traefik/certs
+   chmod 700 ~/cointelligence/traefik/certs
+   # Paste certificate and key from Cloudflare dashboard:
+   nano ~/cointelligence/traefik/certs/origin.crt
+   nano ~/cointelligence/traefik/certs/origin.key
+   chmod 600 ~/cointelligence/traefik/certs/origin.key
+   chmod 644 ~/cointelligence/traefik/certs/origin.crt
+   ```
 
 7. **Start services:**
    ```bash
@@ -197,7 +210,7 @@ docker compose up -d
 - **Secrets not in GitHub** — in `.env` on VM
 - **Manual deployment** via workflow dispatch or SSH
 - **Migrations run on startup** automatically
-- **Traefik** auto-renews Let's Encrypt certs
+- **Traefik** uses Cloudflare Origin CA cert files at `traefik/certs/origin.crt` and `traefik/certs/origin.key`
 
 ## Documentation
 

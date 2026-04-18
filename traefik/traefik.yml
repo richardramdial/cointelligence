@@ -9,10 +9,17 @@ providers:
   docker:
     exposedByDefault: false
     network: web
+  file:
+    filename: /dynamic.yml
 
 entryPoints:
   web:
     address: ":80"
+    http:
+      redirections:
+        entryPoint:
+          to: websecure
+          scheme: https
   websecure:
     address: ":443"
 

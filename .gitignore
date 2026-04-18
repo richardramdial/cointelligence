@@ -23,6 +23,8 @@
 # misc
 .DS_Store
 *.pem
+traefik/certs/*
+!traefik/certs/.gitkeep
 
 # debug
 npm-debug.log*
